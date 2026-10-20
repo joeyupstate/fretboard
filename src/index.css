@@ -73,8 +73,8 @@ body {
 }
 
 .button:disabled {
-  opacity: 0.6;
-  cursor: wait;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .level {
@@ -420,6 +420,144 @@ body {
 .chip.is-active {
   border-color: var(--overlay);
   background: rgb(110 199 255 / 0.12);
+}
+
+.chip.is-static {
+  cursor: default;
+}
+
+.chip.is-static:hover {
+  border-color: transparent;
+}
+
+.chip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.modes {
+  display: inline-flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.modes button {
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modes button.is-active {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.muted {
+  margin: 0;
+  color: var(--muted);
+}
+
+.shape {
+  margin-bottom: 6px;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
+.matches {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.matches li {
+  display: grid;
+  gap: 2px;
+}
+
+.matches__symbol {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.matches__inversion {
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.triads {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.triads li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.triads li .chip {
+  margin-left: auto;
+}
+
+.triads__strings {
+  min-width: 90px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.matches li.is-best .matches__symbol {
+  color: var(--accent);
+  font-size: 2rem;
+}
+
+.fretboard__marker.is-picked circle {
+  fill: var(--accent);
+}
+
+.fretboard__marker.is-picked text {
+  fill: var(--accent-ink);
+}
+
+/* Open strings read as rings, like the "o" above a chord chart */
+.fretboard__marker.is-picked.is-open circle {
+  fill: var(--bg);
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+
+.fretboard__marker.is-picked.is-open text {
+  fill: var(--accent);
+}
+
+.hint {
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+
+.fretboard__mute {
+  fill: var(--muted);
+  font-size: 18px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
 }
 
 .chip__tag {

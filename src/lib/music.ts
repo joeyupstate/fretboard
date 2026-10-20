@@ -34,11 +34,7 @@ export function octave(midi: number): number {
 
 // Every spot on the neck that plays this note. Exact-pitch spots are flagged;
 // the rest are the same note name in other octaves.
-export function positionsFor(
-  midi: number,
-  tuning: number[] = STANDARD_TUNING,
-  fretCount: number = FRET_COUNT,
-): Position[] {
+export function positionsFor(midi: number, tuning: number[] = STANDARD_TUNING, fretCount: number = FRET_COUNT): Position[] {
   const positions: Position[] = [];
   tuning.forEach((open, i) => {
     for (let fret = 0; fret <= fretCount; fret++) {

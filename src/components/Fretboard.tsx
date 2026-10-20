@@ -5,8 +5,9 @@ import type { Overlay } from '../lib/theory';
 type Props = {
   activeMidi: number | null;
   showOctaves: boolean;
-  onSelect: (midi: number) => void;
+  onSelect: (midi: number, stringIndex: number, fret: number) => void;
   overlay?: Overlay | null;
+  picks?: Record<number, number> | null; // chord builder: string index -> fret
   tuning?: number[];
   fretCount?: number;
 };
@@ -24,6 +25,7 @@ export function Fretboard({
   showOctaves,
   onSelect,
   overlay = null,
+  picks = null,
   tuning = STANDARD_TUNING,
   fretCount = FRET_COUNT,
 }: Props) {
@@ -49,17 +51,28 @@ export function Fretboard({
   return (
     <div className="fretboard-scroll">
       <svg className="fretboard" viewBox={`0 0 ${WIDTH} ${HEIGHT + 24}`} role="img" aria-label="Guitar fretboard">
-        <rect className="fretboard__wood" x={NUT_X} y={PAD_Y - 14} width={END_X - NUT_X} height={HEIGHT - PAD_Y * 2 + 28} rx={4} />
+        <rect
+          className="fretboard__wood"
+          x={NUT_X}
+          y={PAD_Y - 14}
+          width={END_X - NUT_X}
+          height={HEIGHT - PAD_Y * 2 + 28}
+          rx={4}
+        />
 
-        {frets.filter((f) => SINGLE_INLAYS.includes(f)).map((f) => (
-          <circle key={f} className="fretboard__inlay" cx={noteX(f)} cy={midY} r={7} />
-        ))}
-        {frets.filter((f) => DOUBLE_INLAYS.includes(f)).map((f) => (
-          <g key={f}>
-            <circle className="fretboard__inlay" cx={noteX(f)} cy={midY - stringGap} r={7} />
-            <circle className="fretboard__inlay" cx={noteX(f)} cy={midY + stringGap} r={7} />
-          </g>
-        ))}
+        {frets
+          .filter((f) => SINGLE_INLAYS.includes(f))
+          .map((f) => (
+            <circle key={f} className="fretboard__inlay" cx={noteX(f)} cy={midY} r={7} />
+          ))}
+        {frets
+          .filter((f) => DOUBLE_INLAYS.includes(f))
+          .map((f) => (
+            <g key={f}>
+              <circle className="fretboard__inlay" cx={noteX(f)} cy={midY - stringGap} r={7} />
+              <circle className="fretboard__inlay" cx={noteX(f)} cy={midY + stringGap} r={7} />
+            </g>
+          ))}
 
         {frets.map((f) => (
           <line
@@ -74,18 +87,27 @@ export function Fretboard({
 
         {tuning.map((open, i) => (
           <g key={i}>
-            <line className="fretboard__string" x1={NUT_X - 30} x2={END_X} y1={stringY(i)} y2={stringY(i)} strokeWidth={1 + i * 0.45} />
+            <line
+              className="fretboard__string"
+              x1={NUT_X - 30}
+              x2={END_X}
+              y1={stringY(i)}
+              y2={stringY(i)}
+              strokeWidth={1 + i * 0.45}
+            />
             <text className="fretboard__label" x={14} y={stringY(i)}>
               {noteName(open)}
             </text>
           </g>
         ))}
 
-        {frets.filter((f) => f > 0).map((f) => (
-          <text key={f} className="fretboard__number" x={noteX(f)} y={HEIGHT + 14}>
-            {f}
-          </text>
-        ))}
+        {frets
+          .filter((f) => f > 0)
+          .map((f) => (
+            <text key={f} className="fretboard__number" x={noteX(f)} y={HEIGHT + 14}>
+              {f}
+            </text>
+          ))}
 
         {/* Invisible hit targets so the board works without a guitar. */}
         {tuning.map((open, i) =>
@@ -96,7 +118,7 @@ export function Fretboard({
               cx={noteX(f)}
               cy={stringY(i)}
               r={Math.min(stringGap / 2, 16)}
-              onClick={() => onSelect(open + f)}
+              onClick={() => onSelect(open + f, i, f)}
             >
               <title>{`${noteName(open + f)} · string ${i + 1}, ${f === 0 ? 'open' : `fret ${f}`}`}</title>
             </circle>
@@ -128,6 +150,24 @@ export function Fretboard({
             <text>{label(p.midi)}</text>
           </g>
         ))}
+
+        {picks &&
+          tuning.map((open, i) =>
+            picks[i] === undefined ? (
+              <text key={`mute-${i}`} className="fretboard__mute" x={noteX(0)} y={stringY(i)}>
+                ×
+              </text>
+            ) : (
+              <g
+                key={`pick-${i}`}
+                className={`fretboard__marker is-picked ${picks[i] === 0 ? 'is-open' : ''}`}
+                transform={`translate(${noteX(picks[i])} ${stringY(i)})`}
+              >
+                <circle r={14} />
+                <text>{noteName(open + picks[i])}</text>
+              </g>
+            ),
+          )}
       </svg>
     </div>
   );

@@ -9,7 +9,17 @@ type Props = {
   onSelectChord: (chord: ChordInfo) => void;
 };
 
-function ChordChip({ chord, active, tag, onSelect }: { chord: ChordInfo; active: boolean; tag?: string; onSelect: (chord: ChordInfo) => void }) {
+function ChordChip({
+  chord,
+  active,
+  tag,
+  onSelect,
+}: {
+  chord: ChordInfo;
+  active: boolean;
+  tag?: string;
+  onSelect: (chord: ChordInfo) => void;
+}) {
   return (
     <button className={`chip ${active ? 'is-active' : ''}`} onClick={() => onSelect(chord)} title={chord.name}>
       {tag && <span className="chip__tag">{tag}</span>}
