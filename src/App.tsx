@@ -85,7 +85,11 @@ export default function App() {
   return (
     <main className="app">
       <header className="app__header">
-        <h1 className="app__title">Fret Theory</h1>
+        <h1 className="app__title">
+          <a href="/" title="Start over">
+            Fret Theory
+          </a>
+        </h1>
         <p>Play a note and see everywhere it lives on the neck. No guitar handy? Click a fret.</p>
       </header>
 

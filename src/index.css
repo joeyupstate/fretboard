@@ -58,6 +58,16 @@ body {
   font-synthesis: none;
 }
 
+/* The title links home, which reloads the app back to its starting state. */
+.app__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app__title a:hover {
+  color: #f6d68a;
+}
+
 .app__header p {
   margin: 0 0 24px;
   color: var(--muted);
