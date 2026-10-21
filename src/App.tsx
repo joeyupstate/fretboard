@@ -24,7 +24,18 @@ const OPEN_STRINGS: Record<number, number> = Object.fromEntries(STANDARD_TUNING.
 // A chosen chord belongs to the note it was picked from, so it clears when a different note comes in.
 type ChordPick = { chord: ChordInfo; pitchClass: number };
 
+// Clicking the title remounts the whole app under a new key, which clears every view's state
+// and stops the mic (the detector cleans up on unmount) without a page reload.
 export default function App() {
+  const [session, setSession] = useState(0);
+  const reset = () => {
+    setSession((s) => s + 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  return <FretTheory key={session} onReset={reset} />;
+}
+
+function FretTheory({ onReset }: { onReset: () => void }) {
   const { status, error, note, debug, devices, deviceId, start, stop } = useNoteDetector();
   const level = debug?.rms ?? 0;
   const [selection, setSelection] = useState<Selection | null>(null);
@@ -86,7 +97,16 @@ export default function App() {
     <main className="app">
       <header className="app__header">
         <h1 className="app__title">
-          <a href="/" title="Start over">
+          <a
+            href="/"
+            title="Start over"
+            onClick={(e) => {
+              // Let cmd/ctrl/shift-click open a new tab as usual.
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+              e.preventDefault();
+              onReset();
+            }}
+          >
             Fret Theory
           </a>
         </h1>
