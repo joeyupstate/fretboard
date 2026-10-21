@@ -3,6 +3,7 @@ import { ChordBuilder } from './components/ChordBuilder';
 import { ChordExplorer } from './components/ChordExplorer';
 import { Fretboard } from './components/Fretboard';
 import { NotePanel } from './components/NotePanel';
+import { Tuner } from './components/Tuner';
 import { STANDARD_TUNING, midiToFreq, noteName, octave, pitchClass, positionsFor } from './lib/music';
 import { majorScale, rootName, spellings } from './lib/theory';
 import type { ChordInfo, Overlay } from './lib/theory';
@@ -10,12 +11,13 @@ import { useNoteDetector } from './lib/useNoteDetector';
 
 type Selection = { midi: number; source: 'mic' | 'click' };
 
-type Mode = 'explore' | 'chords' | 'build';
+type Mode = 'explore' | 'chords' | 'build' | 'tuner';
 
 const MODES: { id: Mode; label: string }[] = [
   { id: 'explore', label: 'Explore notes' },
   { id: 'chords', label: 'Explore chords' },
   { id: 'build', label: 'Chord builder' },
+  { id: 'tuner', label: 'Tuner' },
 ];
 
 // Chord builder starting point: every string ringing open, like picking up a guitar.
@@ -24,11 +26,17 @@ const OPEN_STRINGS: Record<number, number> = Object.fromEntries(STANDARD_TUNING.
 // A chosen chord belongs to the note it was picked from, so it clears when a different note comes in.
 type ChordPick = { chord: ChordInfo; pitchClass: number };
 
+function modeFromHash(): Mode {
+  const hash = window.location.hash.slice(1);
+  return MODES.some((m) => m.id === hash) ? (hash as Mode) : 'explore';
+}
+
 // Clicking the title remounts the whole app under a new key, which clears every view's state
 // and stops the mic (the detector cleans up on unmount) without a page reload.
 export default function App() {
   const [session, setSession] = useState(0);
   const reset = () => {
+    history.replaceState(null, '', window.location.pathname);
     setSession((s) => s + 1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -42,7 +50,7 @@ function FretTheory({ onReset }: { onReset: () => void }) {
   const [showOctaves, setShowOctaves] = useState(true);
   const [showScale, setShowScale] = useState(false);
   const [chordPick, setChordPick] = useState<ChordPick | null>(null);
-  const [mode, setMode] = useState<Mode>('explore');
+  const [mode, setMode] = useState<Mode>(modeFromHash);
   const [picks, setPicks] = useState<Record<number, number>>(OPEN_STRINGS);
 
   useEffect(() => {
@@ -71,6 +79,8 @@ function FretTheory({ onReset }: { onReset: () => void }) {
   const switchMode = (next: Mode) => {
     if (next !== 'explore' && listening) stop();
     setMode(next);
+    // Each tab gets a shareable link, e.g. /#tuner. replaceState keeps the back button out of it.
+    history.replaceState(null, '', next === 'explore' ? window.location.pathname : `#${next}`);
   };
 
   // Builder works like a hand on the neck: one note per string, and every string rings open
@@ -127,7 +137,9 @@ function FretTheory({ onReset }: { onReset: () => void }) {
         ))}
       </div>
 
-      {mode === 'chords' ? (
+      {mode === 'tuner' ? (
+        <Tuner />
+      ) : mode === 'chords' ? (
         <ChordExplorer />
       ) : (
         <>

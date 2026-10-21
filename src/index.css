@@ -118,6 +118,10 @@ body {
   transition: width 60ms linear;
 }
 
+input[type='checkbox'] {
+  accent-color: var(--accent);
+}
+
 .toggle {
   display: flex;
   align-items: center;
@@ -219,6 +223,13 @@ body {
   width: 100%;
   min-width: 900px;
   height: auto;
+}
+
+/* Phones: the neck stands upright, nut at the top, sized to the screen width. */
+.fretboard--vertical {
+  min-width: 0;
+  max-width: 420px;
+  margin: 0 auto;
 }
 
 .fretboard__wood {
@@ -444,7 +455,7 @@ body {
   align-items: baseline;
   gap: 6px;
   padding: 6px 10px;
-  border: 1px solid transparent;
+  border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--bg);
   color: var(--text);
@@ -468,7 +479,7 @@ body {
 }
 
 .chip.is-static:hover {
-  border-color: transparent;
+  border-color: var(--border);
 }
 
 .chip:disabled {
@@ -478,6 +489,8 @@ body {
 
 .modes {
   display: inline-flex;
+  max-width: 100%;
+  overflow-x: auto;
   gap: 4px;
   margin-bottom: 20px;
   padding: 4px;
@@ -494,7 +507,124 @@ body {
   color: var(--muted);
   font: inherit;
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
+}
+
+/* Tuner */
+.tuner {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  max-width: 480px;
+  margin: 0 auto 16px;
+  padding: 20px 24px 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--surface-raised), var(--surface));
+  text-align: center;
+  transition: border-color 150ms;
+}
+
+.tuner.is-in-tune {
+  border-color: var(--good);
+}
+
+.tuner.is-idle .tuner__needle,
+.tuner.is-idle .tuner__note {
+  opacity: 0.4;
+}
+
+.tuner__target {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.tuner__gauge {
+  width: 100%;
+  max-width: 340px;
+}
+
+.tuner__tick {
+  stroke: var(--muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.tuner__tick.is-center {
+  stroke: var(--text);
+  stroke-width: 3;
+}
+
+.tuner__zone {
+  fill: none;
+  stroke: var(--good);
+  stroke-width: 10;
+  stroke-linecap: round;
+  opacity: 0.35;
+}
+
+.is-in-tune .tuner__zone {
+  opacity: 1;
+}
+
+.tuner__needle {
+  stroke: var(--accent);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: transform 90ms linear;
+}
+
+.is-in-tune .tuner__needle {
+  stroke: var(--good);
+}
+
+.tuner__hub {
+  fill: var(--text);
+}
+
+.tuner__scale {
+  fill: var(--muted);
+  font-size: 13px;
+  text-anchor: middle;
+}
+
+.tuner__note {
+  min-height: 4.5rem;
+  font-size: 4.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.is-in-tune .tuner__note {
+  color: var(--good);
+}
+
+.tuner__verdict {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.tuner__strings {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Seven buttons have to fit one row on a phone */
+.tuner__strings .chip {
+  min-width: 0;
+  padding: 6px 9px;
+}
+
+.controls--center {
+  justify-content: center;
+}
+
+.chip.is-good {
+  border-color: var(--good);
+  color: var(--good);
 }
 
 .modes button.is-active {
@@ -695,5 +825,25 @@ body {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+  }
+
+  /* Four tabs don't fit in one row on a phone, so stack them two by two. */
+  .modes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    border-radius: 16px;
+  }
+
+  .modes--small {
+    display: inline-flex;
+    width: auto;
+    border-radius: 999px;
+  }
+
+  .modes button {
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 0.9rem;
   }
 }
