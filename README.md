@@ -1,4 +1,4 @@
-# Fretboard
+# Fret Theory
 
 Play a note on your guitar and see every spot on the neck where that pitch can be played, plus the major scale and chords that go with it. No guitar handy? Click any fret.
 

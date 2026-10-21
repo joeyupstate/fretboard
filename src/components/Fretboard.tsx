@@ -51,6 +51,14 @@ export function Fretboard({
   return (
     <div className="fretboard-scroll">
       <svg className="fretboard" viewBox={`0 0 ${WIDTH} ${HEIGHT + 24}`} role="img" aria-label="Guitar fretboard">
+        {/* Rosewood: lighter down the middle, darker at the edges. Only one board renders at a time, so a fixed id is safe. */}
+        <defs>
+          <linearGradient id="fretboard-wood" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" className="fretboard__wood-dark" />
+            <stop offset="0.5" className="fretboard__wood-light" />
+            <stop offset="1" className="fretboard__wood-dark" />
+          </linearGradient>
+        </defs>
         <rect
           className="fretboard__wood"
           x={NUT_X}

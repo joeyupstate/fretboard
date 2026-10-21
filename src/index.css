@@ -1,21 +1,29 @@
+/* Vintage guitar palette: sunburst amber, rosewood, pearl, seafoam. */
 :root {
-  --bg: #14110f;
-  --surface: #1f1a17;
-  --text: #f3ece4;
-  --muted: #a89c90;
-  --accent: #ffb347;
-  --accent-ink: #1a1208;
-  --wood: #3b2618;
-  --fret: #c9c4bc;
-  --nut: #efe6d2;
-  --string: #d9d2c5;
-  --inlay: #e8dcc4;
-  --danger: #ff7a6b;
-  --overlay: #6ec7ff;
-  --overlay-ink: #06202f;
+  --bg: #110e0c;
+  --bg-glow: #2b1a0f;
+  --surface: #1b1613;
+  --surface-raised: #231c17;
+  --border: rgb(240 222 196 / 0.08);
+  --text: #f2e8da;
+  --muted: #a3958a;
+  --accent: #e8a33d;
+  --accent-deep: #b8611f;
+  --accent-ink: #1c1006;
+  --overlay: #8cc7b4;
+  --overlay-ink: #0e231d;
+  --good: #8cc7b4;
+  --danger: #d9705c;
+  --wood-light: #4a2d1b;
+  --wood-dark: #2a170d;
+  --fret: #cfc7ba;
+  --nut: #efe4cc;
+  --string: #ddd3c3;
+  --inlay: #f1e6cf;
+  --wood: #331e12;
 
   color-scheme: dark;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   color: var(--text);
   background: var(--bg);
 }
@@ -27,7 +35,10 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
+  /* A faint sunburst glow behind the header */
+  background:
+    radial-gradient(ellipse 90% 420px at 50% -80px, var(--bg-glow), transparent 70%),
+    var(--bg);
 }
 
 .app {
@@ -36,10 +47,15 @@ body {
   padding: 32px 16px 48px;
 }
 
-.app__header h1 {
+/* Pirata One: broad-pen lettering in the spirit of 1950s guitar headstocks. It has one weight, so no faux bold. */
+.app__title {
   margin: 0 0 4px;
-  font-size: 2rem;
-  letter-spacing: -0.02em;
+  font-family: 'Pirata One', 'DM Sans', system-ui, sans-serif;
+  font-size: clamp(2.75rem, 7vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  font-synthesis: none;
 }
 
 .app__header p {
@@ -59,7 +75,8 @@ body {
   padding: 10px 18px;
   border: 0;
   border-radius: 999px;
-  background: var(--accent);
+  background: linear-gradient(180deg, #f0b553, var(--accent) 60%, #d28a2c);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.25) inset, 0 2px 8px rgb(0 0 0 / 0.3);
   color: var(--accent-ink);
   font: inherit;
   font-weight: 600;
@@ -127,8 +144,9 @@ body {
   min-height: 120px;
   margin-bottom: 16px;
   padding: 16px 24px;
-  border-radius: 12px;
-  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--surface-raised), var(--surface));
 }
 
 .readout__note {
@@ -168,7 +186,7 @@ body {
   width: 160px;
   height: 8px;
   border-radius: 4px;
-  background: linear-gradient(to right, var(--danger), #7ee08a 45% 55%, var(--danger));
+  background: linear-gradient(to right, var(--danger), var(--good) 45% 55%, var(--danger));
 }
 
 .cents__needle {
@@ -194,7 +212,17 @@ body {
 }
 
 .fretboard__wood {
-  fill: var(--wood);
+  fill: url(#fretboard-wood);
+  stroke: rgb(0 0 0 / 0.5);
+  stroke-width: 1;
+}
+
+.fretboard__wood-light {
+  stop-color: var(--wood-light);
+}
+
+.fretboard__wood-dark {
+  stop-color: var(--wood-dark);
 }
 
 .fretboard__fret {
@@ -211,9 +239,10 @@ body {
   stroke: var(--string);
 }
 
+/* Pearl dots */
 .fretboard__inlay {
   fill: var(--inlay);
-  opacity: 0.35;
+  opacity: 0.5;
 }
 
 .fretboard__label,
@@ -333,7 +362,8 @@ body {
 
 .card {
   padding: 18px 20px;
-  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
   background: var(--surface);
 }
 
@@ -418,8 +448,9 @@ body {
 }
 
 .chip.is-active {
-  border-color: var(--overlay);
-  background: rgb(110 199 255 / 0.12);
+  border-color: var(--accent);
+  background: rgb(232 163 61 / 0.12);
+  color: #f6d68a;
 }
 
 .chip.is-static {
@@ -440,6 +471,7 @@ body {
   gap: 4px;
   margin-bottom: 20px;
   padding: 4px;
+  border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surface);
 }
@@ -525,6 +557,80 @@ body {
 .matches li.is-best .matches__symbol {
   color: var(--accent);
   font-size: 2rem;
+}
+
+.picker {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.chip--note {
+  min-width: 52px;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.readout__note--chord {
+  font-size: 3.5rem;
+}
+
+.modes--small {
+  margin-bottom: 16px;
+}
+
+.modes--small button {
+  padding: 6px 14px;
+  font-size: 0.9rem;
+}
+
+.inversions {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inversions__item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.inversions__item:hover {
+  border-color: var(--muted);
+}
+
+.inversions__item.is-active {
+  border-color: var(--accent);
+}
+
+.inversions__item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.inversions__shape {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  align-self: center;
+  font-family: ui-monospace, Menlo, monospace;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stepper {
+  margin-top: 12px;
 }
 
 .fretboard__marker.is-picked circle {

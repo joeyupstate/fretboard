@@ -38,9 +38,16 @@ export function spellings(midi: number): string {
   return other && other !== sharp ? `${sharp} / ${other}` : sharp;
 }
 
+// Tonal leaves the type name blank for add9, which would make "Cadd9" read as plain "C".
+function typeName(chord: ReturnType<typeof Chord.get>): string {
+  return chord.type || (chord.aliases.includes('add9') ? 'major add ninth' : '');
+}
+
 function chordInfo(symbol: string): ChordInfo {
   const chord = Chord.get(symbol);
-  return { symbol, name: chord.name, notes: chord.notes };
+  const name = chord.tonic ? `${chord.tonic} ${typeName(chord)}`.trim() : chord.name;
+  const bass = symbol.split('/')[1];
+  return { symbol, name: bass ? `${name} over ${bass}` : name, notes: chord.notes };
 }
 
 export function chordsBuiltOn(root: string): ChordInfo[] {
@@ -87,7 +94,7 @@ const COMMON_TYPES = [
 const BUILDER_SUFFIXES = ['', 'm', '7', 'maj7', 'm7', 'sus4', 'sus2', '6', 'm6', 'add9', 'dim', 'aug'];
 
 function typeRank(symbol: string): number {
-  const index = COMMON_TYPES.indexOf(Chord.get(symbol).type);
+  const index = COMMON_TYPES.indexOf(typeName(Chord.get(symbol)));
   return index === -1 ? COMMON_TYPES.length : index;
 }
 
@@ -133,6 +140,33 @@ function inversionOf(symbol: string): string {
   const degree = interval.startsWith('2') && head.includes('9') ? 9 : Number(interval[0]);
   const ordinal = degree === 2 ? '2nd' : `${degree}th`;
   return `${ordinal} in bass`;
+}
+
+// A chord from a root pitch class and a Tonal suffix ("m", "maj7", ...), spelled the usual way.
+export function spellChord(rootPc: number, suffix: string): ChordInfo {
+  const symbol = respell(ROOT_NAMES[rootPc] + suffix);
+  return { ...chordInfo(symbol), symbol: displaySymbol(symbol) };
+}
+
+const FORMULA_DEGREES: Record<string, string> = {
+  '1P': '1',
+  '2M': '2',
+  '3m': '♭3',
+  '3M': '3',
+  '4P': '4',
+  '5d': '♭5',
+  '5P': '5',
+  '5A': '♯5',
+  '6M': '6',
+  '7d': '𝄫7',
+  '7m': '♭7',
+  '7M': '7',
+  '9M': '9',
+};
+
+// Chord formula as guitarists write it, e.g. Cm7 -> 1 ♭3 5 ♭7.
+export function chordFormula(symbol: string): string[] {
+  return Chord.get(symbol).intervals.map((i) => FORMULA_DEGREES[i] ?? i);
 }
 
 export type NamedChord = ChordInfo & { inversion: string };

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="burst" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f4cf7a" />
+      <stop offset="1" stop-color="#b8611f" />
+    </linearGradient>
+  </defs>
+  <path d="M32 60C22 48 6 32 6 18 6 9 17 4 32 4s26 5 26 14c0 14-16 30-26 42z" fill="url(#burst)" />
+</svg>
